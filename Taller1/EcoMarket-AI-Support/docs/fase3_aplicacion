@@ -1,0 +1,20 @@
+# Fase 3. Aplicación de ingeniería de prompts
+
+## 3.1 Estructura sugerida del repositorio
+
+```bash
+EcoMarket-AI-Support/
+│── README.md
+│── requirements.txt
+│── src/
+│   ├── main.py
+│   ├── prompts.py
+│   ├── data_loader.py
+│   └── rules.py
+│── data/
+│   ├── orders.json
+│   └── return_policies.json
+└── docs/
+    ├── fase1_modelo.md
+    └── fase2_riesgos.md
+```

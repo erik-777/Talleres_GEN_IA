@@ -1,0 +1,92 @@
+[
+  {
+    "tracking_number": "ECO1001",
+    "customer_name": "Laura Gómez",
+    "product": "Botella térmica de acero reutilizable",
+    "status": "En tránsito",
+    "estimated_delivery": "2026-04-18",
+    "tracking_link": "https://ecomarket.com/track/ECO1001",
+    "delay_reason": ""
+  },
+  {
+    "tracking_number": "ECO1002",
+    "customer_name": "Carlos Pérez",
+    "product": "Cepillo de bambú",
+    "status": "Entregado",
+    "estimated_delivery": "2026-04-12",
+    "tracking_link": "https://ecomarket.com/track/ECO1002",
+    "delay_reason": ""
+  },
+  {
+    "tracking_number": "ECO1003",
+    "customer_name": "Ana Torres",
+    "product": "Kit de cubiertos reutilizables",
+    "status": "Preparando envío",
+    "estimated_delivery": "2026-04-20",
+    "tracking_link": "https://ecomarket.com/track/ECO1003",
+    "delay_reason": ""
+  },
+  {
+    "tracking_number": "ECO1004",
+    "customer_name": "Miguel Rojas",
+    "product": "Shampoo sólido natural",
+    "status": "Retrasado",
+    "estimated_delivery": "2026-04-22",
+    "tracking_link": "https://ecomarket.com/track/ECO1004",
+    "delay_reason": "Alta demanda logística por cierre vial en la ruta de distribución."
+  },
+  {
+    "tracking_number": "ECO1005",
+    "customer_name": "Paula Díaz",
+    "product": "Bolsa compostable",
+    "status": "En tránsito",
+    "estimated_delivery": "2026-04-17",
+    "tracking_link": "https://ecomarket.com/track/ECO1005",
+    "delay_reason": ""
+  },
+  {
+    "tracking_number": "ECO1006",
+    "customer_name": "Jorge Ruiz",
+    "product": "Set de higiene personal ecológico",
+    "status": "Entregado",
+    "estimated_delivery": "2026-04-10",
+    "tracking_link": "https://ecomarket.com/track/ECO1006",
+    "delay_reason": ""
+  },
+  {
+    "tracking_number": "ECO1007",
+    "customer_name": "María León",
+    "product": "Contenedor de vidrio reutilizable",
+    "status": "En centro logístico",
+    "estimated_delivery": "2026-04-19",
+    "tracking_link": "https://ecomarket.com/track/ECO1007",
+    "delay_reason": ""
+  },
+  {
+    "tracking_number": "ECO1008",
+    "customer_name": "Sofía Vargas",
+    "product": "Esponja vegetal natural",
+    "status": "Retrasado",
+    "estimated_delivery": "2026-04-23",
+    "tracking_link": "https://ecomarket.com/track/ECO1008",
+    "delay_reason": "Demora del proveedor de última milla."
+  },
+  {
+    "tracking_number": "ECO1009",
+    "customer_name": "Felipe Castro",
+    "product": "Vasos de silicona reutilizables",
+    "status": "Preparando envío",
+    "estimated_delivery": "2026-04-21",
+    "tracking_link": "https://ecomarket.com/track/ECO1009",
+    "delay_reason": ""
+  },
+  {
+    "tracking_number": "ECO1010",
+    "customer_name": "Daniela Mejía",
+    "product": "Jabón artesanal ecológico",
+    "status": "Entregado",
+    "estimated_delivery": "2026-04-11",
+    "tracking_link": "https://ecomarket.com/track/ECO1010",
+    "delay_reason": ""
+  }
+]
