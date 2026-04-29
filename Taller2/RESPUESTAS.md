@@ -67,3 +67,13 @@ Para esta entrega, se ha "ajustado" el modelo anterior integrando sus capacidade
     *   El script `taller2_rag.py` ahora detecta números de seguimiento (ej. ECO1001) usando expresiones regulares y consulta la base de datos JSON original.
     *   Las políticas por categoría que estaban en JSON se han convertido a Markdown para que el sistema RAG pueda realizar búsquedas semánticas sobre ellas, permitiendo consultas más naturales (ej. "¿puedo devolver un cepillo?") en lugar de búsquedas por clave exacta.
 3.  **Prompt Unificado:** Se diseñó un prompt que combina el contexto recuperado de documentos con los datos estructurados del pedido, permitiendo que el asistente actúe con conocimiento total de la empresa y del cliente específico.
+
+---
+
+## Fase 5: Evidencia de Ejecución
+
+El sistema fue probado con éxito integrando consultas de rastreo de pedidos (Taller 1) y consultas de políticas/FAQs vía RAG (Taller 2).
+
+![Evidencia de Ejecución](./docs/ejecucion.png)
+
+*Figura 1: Captura de pantalla de la terminal mostrando las respuestas del asistente ante diferentes tipos de consultas.*

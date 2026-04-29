@@ -6,9 +6,8 @@ from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import Chroma
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains import RetrievalQA
-from langchain.prompts import PromptTemplate
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.prompts import PromptTemplate
 
 # 1. Configuración de Rutas y Variables
 load_dotenv()
@@ -33,7 +32,7 @@ def get_order_details(tracking_number):
 
 # 3. Inicialización del Sistema RAG
 def initialize_rag_system():
-    print("--- Inicializando Sistema RAG Integrado (Taller 1 + Taller 2) ---")
+    print("--- Inicializando Sistema RAG Integrado---")
     
     if not KNOWLEDGE_BASE_DIR.exists():
         KNOWLEDGE_BASE_DIR.mkdir(parents=True, exist_ok=True)
