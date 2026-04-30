@@ -130,10 +130,10 @@ if __name__ == "__main__":
             llm, template = setup_qa_chain(vdb)
             
             test_queries = [
-                "¿Cuál es el estado de mi pedido ECO1004?", # De Taller 1
-                "¿Puedo devolver un cepillo de dientes si ya lo abrí?", # De Taller 1 (integrado a RAG)
-                "¿Cuál es el plazo general para devoluciones?", # De Taller 2
-                "¿Tienen envíos a Cali?" # De Taller 2
+                "¿Cuál es el estado de mi pedido ECO1004?", 
+                "¿Puedo devolver un cepillo de dientes si ya lo abrí?", 
+                "¿Cuál es el plazo general para devoluciones?", 
+                "¿Tienen envíos a Cali?" 
             ]
             
             for q in test_queries:
