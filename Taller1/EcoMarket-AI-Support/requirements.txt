@@ -1,1 +1,3 @@
-python>=3.10
+# Taller 1 usa únicamente módulos de la biblioteca estándar de Python (json, pathlib).
+# No requiere dependencias externas pip.
+# Python >= 3.10
