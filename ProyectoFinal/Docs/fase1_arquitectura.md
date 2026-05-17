@@ -2,7 +2,7 @@
 
 ## 1. Extensión de la Arquitectura RAG
 
-El sistema RAG del Taller 2 (ChromaDB + OpenAI Embeddings + GPT-3.5-turbo) se incorpora como una **herramienta más del agente** (`buscar_politicas_ecomarket`). Esto sigue el patrón de **arquitectura router implícita**: el LLM del agente decide en tiempo de ejecución si la consulta requiere una búsqueda vectorial semántica, una consulta a la base de datos de pedidos, o una acción transaccional (verificar/generar devolución).
+El sistema RAG del Taller 2 (ChromaDB + OpenAI Embeddings + GPT-4o-mini) se incorpora como una **herramienta más del agente** (`buscar_politicas_ecomarket`). Esto sigue el patrón de **arquitectura router implícita**: el LLM del agente decide en tiempo de ejecución si la consulta requiere una búsqueda vectorial semántica, una consulta a la base de datos de pedidos, o una acción transaccional (verificar/generar devolución).
 
 Esta decisión se toma por el propio razonamiento del agente (ReAct / OpenAI Tools), sin reglas de ruteo escritas en código, lo cual es más flexible que un router basado en reglas fijas.
 
@@ -79,7 +79,7 @@ Se eligió **LangChain** sobre LlamaIndex por las siguientes razones:
 [Cliente escribe consulta]
          │
          ▼
-[AgentExecutor analiza intent]
+[create_react_agent analiza intent]
          │
          ├─ ¿Pregunta de estado? ──────────────► consultar_estado_pedido
          │                                              │
