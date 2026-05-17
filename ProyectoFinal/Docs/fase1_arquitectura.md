@@ -10,7 +10,7 @@ Esta decisión se toma por el propio razonamiento del agente (ReAct / OpenAI Too
 Usuario
   │
   ▼
-AgentExecutor (LangChain + GPT-3.5-turbo)
+create_react_agent (LangGraph + GPT-4o-mini)
   │
   ├──► consultar_estado_pedido        → JSON legacy_data/orders.json
   │
@@ -64,12 +64,12 @@ Se eligió **LangChain** sobre LlamaIndex por las siguientes razones:
 | Criterio | LangChain | LlamaIndex |
 |---|---|---|
 | Continuidad con Taller 2 | ✅ Ya se usaba LangChain | ❌ Requeriría reescribir el RAG |
-| Integración de tools con OpenAI | ✅ `create_openai_tools_agent` nativo | ⚠️ Más verboso |
+| Integración de tools con OpenAI | ✅ `create_react_agent` (LangGraph prebuilt) | ⚠️ Más verboso |
 | Manejo de historial de chat | ✅ `MessagesPlaceholder` built-in | ✅ También disponible |
 | Documentación y ecosistema | ✅ Muy amplio | ✅ Bueno pero más enfocado en RAG |
 | Facilidad para definir tools | ✅ Decorador `@tool` | ⚠️ Requiere más boilerplate |
 
-**Conclusión:** LangChain permite reutilizar directamente el código del Taller 2 y ofrece el decorador `@tool` que simplifica enormemente la definición de herramientas. La clase `AgentExecutor` con `create_openai_tools_agent` proporciona manejo de pasos intermedios (`intermediate_steps`) necesario para la observabilidad en la interfaz Streamlit.
+**Conclusión:** LangChain + LangGraph permite reutilizar directamente el código del Taller 2 y ofrece el decorador `@tool` que simplifica enormemente la definición de herramientas. `create_react_agent` de LangGraph proporciona un historial de mensajes estructurado que permite extraer los pasos intermedios (herramientas usadas, inputs y outputs) necesarios para la observabilidad en la interfaz Streamlit.
 
 ---
 
