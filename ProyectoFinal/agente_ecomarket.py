@@ -75,6 +75,16 @@ def get_vector_db():
     if _vector_db is not None:
         return _vector_db
 
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+
+    # Reutiliza la DB persistida si ya existe
+    if DB_DIR.exists() and any(DB_DIR.iterdir()):
+        _vector_db = Chroma(
+            persist_directory=str(DB_DIR),
+            embedding_function=embeddings,
+        )
+        return _vector_db
+
     if not KNOWLEDGE_BASE_DIR.exists():
         print(f"ADVERTENCIA: No se encontró knowledge_base en {KNOWLEDGE_BASE_DIR}")
         return None
@@ -91,7 +101,6 @@ def get_vector_db():
         chunk_size=1000, chunk_overlap=200, separators=["\n\n", "\n", " ", ""]
     )
     chunks = splitter.split_documents(documents)
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     _vector_db = Chroma.from_documents(
         documents=chunks,
         embedding=embeddings,
@@ -233,7 +242,7 @@ REGLAS:
 
 
 def create_agent():
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0)
     return create_react_agent(llm, TOOLS, prompt=SYSTEM_PROMPT)
 
 
