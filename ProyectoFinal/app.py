@@ -1,4 +1,5 @@
 import os
+import time
 from pathlib import Path
 
 import streamlit as st
@@ -15,40 +16,40 @@ st.set_page_config(
     layout="centered",
 )
 
-st.markdown("""
-<style>
-    .eco-header { color: #2E7D32; font-size: 2rem; font-weight: 700; margin-bottom: 0; }
-    .eco-sub    { color: #558B2F; font-size: 0.95rem; margin-bottom: 1.2rem; }
-    .tool-badge {
-        display: inline-block;
-        background: #E8F5E9;
-        color: #1B5E20;
-        border-radius: 12px;
-        padding: 2px 10px;
-        font-size: 0.8rem;
-        margin: 2px;
-        font-family: monospace;
-    }
-</style>
-""", unsafe_allow_html=True)
+def _load_css(path: Path) -> None:
+    st.markdown(f"<style>{path.read_text()}</style>", unsafe_allow_html=True)
 
-st.markdown('<p class="eco-header">🌿 EcoMarket — Asistente IA</p>', unsafe_allow_html=True)
-st.markdown(
-    '<p class="eco-sub">Consulta el estado de tus pedidos, políticas y gestiona devoluciones</p>',
-    unsafe_allow_html=True,
-)
+_load_css(Path(__file__).parent / "styles.css")
+
+# ─── CONSTANTES ──────────────────────────────────────────────────────────────
+
+TOOL_META = {
+    "consultar_estado_pedido":         {"icon": "📦", "label": "Estado de pedido"},
+    "verificar_elegibilidad_devolucion": {"icon": "🔍", "label": "Elegibilidad devolución"},
+    "generar_etiqueta_devolucion":     {"icon": "🏷️",  "label": "Generar etiqueta"},
+    "buscar_politicas_ecomarket":      {"icon": "📚", "label": "Políticas / FAQ"},
+}
+
+# ─── HEADER ──────────────────────────────────────────────────────────────────
+
+st.markdown("""
+<div class="eco-header">
+    <h1>🌿 EcoMarket — Asistente IA</h1>
+    <p>Consulta el estado de tus pedidos, gestiona devoluciones y conoce nuestras políticas</p>
+</div>
+""", unsafe_allow_html=True)
 
 # ─── SIDEBAR ─────────────────────────────────────────────────────────────────
 
 with st.sidebar:
+    st.markdown("### 🌿 EcoMarket Support")
+    st.markdown('<span class="status-dot"></span> **Agente activo**', unsafe_allow_html=True)
+    st.divider()
+
     st.markdown("### 🛠 Herramientas disponibles")
-    st.markdown("""
-El agente puede usar:
-- **consultar_estado_pedido** — Estado de un pedido ECOxxxx
-- **verificar_elegibilidad_devolucion** — ¿Puedo devolver?
-- **generar_etiqueta_devolucion** — Genera código de devolución
-- **buscar_politicas_ecomarket** — FAQs y políticas generales
-    """)
+    for meta in TOOL_META.values():
+        st.markdown(f"{meta['icon']} {meta['label']}")
+
     st.divider()
     st.markdown("### 📦 Pedidos de prueba")
     st.markdown("""
@@ -58,7 +59,7 @@ El agente puede usar:
 | ECO1002 | Entregado ✅ |
 | ECO1004 | Retrasado ⚠️ |
 | ECO1006 | Entregado ✅ |
-    """)
+""")
     st.divider()
     st.caption("Proyecto Final — IA Generativa · ICESI")
 
@@ -79,13 +80,67 @@ def load_agent():
     get_vector_db()
     return get_agent()
 
-agent = load_agent()
+load_agent()
 
 # ─── ESTADO DE SESIÓN ─────────────────────────────────────────────────────────
 
 if "messages" not in st.session_state:
-    st.session_state.messages = []       # para mostrar en UI
-    st.session_state.lc_history = []     # para LangChain (HumanMessage / AIMessage)
+    st.session_state.messages = []
+    st.session_state.lc_history = []
+    st.session_state.response_times = []
+    st.session_state.tools_count = {k: 0 for k in TOOL_META}
+
+# ─── HELPER: RENDERIZAR PASOS DE TOOLS ───────────────────────────────────────
+
+def render_tool_steps(steps: list, elapsed: float | None = None):
+    if not steps:
+        return
+    n = len(steps)
+    header = f"🔧 {n} herramienta{'s' if n > 1 else ''} usada{'s' if n > 1 else ''}"
+    if elapsed is not None:
+        header += f"  ·  ⏱ {elapsed:.1f}s"
+
+    with st.expander(header):
+        st.markdown('<div class="tl-wrap">', unsafe_allow_html=True)
+        for i, step in enumerate(steps, 1):
+            meta = TOOL_META.get(step["tool"], {"icon": "🔧", "label": step["tool"]})
+            output_preview = step["output"][:280] + ("…" if len(step["output"]) > 280 else "")
+            st.markdown(
+                f'<div class="tl-step">'
+                f'<div>'
+                f'<span style="font-size:0.75rem;color:#888;margin-right:6px">Paso {i}</span>'
+                f'{meta["icon"]} <span class="tl-badge">{step["tool"]}</span>'
+                f'<div class="tl-io">'
+                f'<b>Entrada:</b> <code>{step["input"]}</code><br>'
+                f'<b>Resultado:</b> {output_preview}'
+                f'</div>'
+                f'</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# ─── MÉTRICAS EN TIEMPO REAL ─────────────────────────────────────────────────
+
+n_consultas = len([m for m in st.session_state.messages if m["role"] == "user"])
+n_tools     = sum(st.session_state.tools_count.values())
+avg_time    = (
+    f"{sum(st.session_state.response_times) / len(st.session_state.response_times):.1f}s"
+    if st.session_state.response_times else "—"
+)
+top_tool    = (
+    max(st.session_state.tools_count, key=st.session_state.tools_count.get)
+    if n_tools > 0 else "—"
+)
+top_icon    = TOOL_META[top_tool]["icon"] if top_tool != "—" else "—"
+
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("💬 Consultas",       n_consultas)
+col2.metric("🔧 Llamadas a tools", n_tools)
+col3.metric("⏱ Tiempo promedio",  avg_time)
+col4.metric("🏆 Tool más usada",  top_icon if top_tool == "—" else f"{top_icon} ×{st.session_state.tools_count[top_tool]}" if n_tools > 0 else "—")
+
+st.divider()
 
 # ─── CONSULTAS SUGERIDAS (solo cuando no hay historial) ───────────────────────
 
@@ -109,64 +164,51 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
         if msg.get("steps"):
-            _tool_names = [s["tool"] for s in msg["steps"]]
-            with st.expander(f"🔧 Herramientas usadas: {len(_tool_names)}"):
-                for step in msg["steps"]:
-                    st.markdown(
-                        f'<span class="tool-badge">{step["tool"]}</span>',
-                        unsafe_allow_html=True,
-                    )
-                    st.caption(f"**Input:** `{step['input']}`")
-                    st.caption(f"**Resultado:** {step['output'][:300]}{'...' if len(step['output']) > 300 else ''}")
-                    st.divider()
+            render_tool_steps(msg["steps"], msg.get("elapsed"))
 
 # ─── INPUT DEL USUARIO ────────────────────────────────────────────────────────
 
 query = st.chat_input("Escribe tu consulta aquí...")
 
-# Manejar sugerencias pendientes
 if "_pending" in st.session_state:
     query = st.session_state.pop("_pending")
 
 if query:
-    # Mostrar mensaje del usuario
     st.session_state.messages.append({"role": "user", "content": query})
     with st.chat_message("user"):
         st.markdown(query)
 
-    # Obtener respuesta del agente
     with st.chat_message("assistant"):
         with st.spinner("Procesando..."):
             from agente_ecomarket import run_query
+            t0 = time.time()
             result = run_query(query, st.session_state.lc_history)
+            elapsed = round(time.time() - t0, 2)
 
         response = result["output"]
         st.markdown(response)
 
-        # Mostrar herramientas usadas si las hay
         steps_display = result.get("steps", [])
-        if steps_display:
-            tool_names = [s["tool"] for s in steps_display]
-            with st.expander(f"🔧 Herramientas usadas: {len(tool_names)}"):
-                for step in steps_display:
-                    st.markdown(
-                        f'<span class="tool-badge">{step["tool"]}</span>',
-                        unsafe_allow_html=True,
-                    )
-                    st.caption(f"**Input:** `{step['input']}`")
-                    st.caption(f"**Resultado:** {step['output'][:300]}{'...' if len(step['output']) > 300 else ''}")
-                    st.divider()
+        render_tool_steps(steps_display, elapsed)
 
         if not result["success"]:
             st.error("Hubo un error. Intenta de nuevo o contacta a soporte@ecomarket.com")
 
-    # Actualizar historial
+    # Actualizar métricas
+    st.session_state.response_times.append(elapsed)
+    for step in steps_display:
+        if step["tool"] in st.session_state.tools_count:
+            st.session_state.tools_count[step["tool"]] += 1
+
     st.session_state.messages.append({
         "role": "assistant",
         "content": response,
         "steps": steps_display,
+        "elapsed": elapsed,
     })
     st.session_state.lc_history.extend([
         HumanMessage(content=query),
         AIMessage(content=response),
     ])
+
+    st.rerun()
